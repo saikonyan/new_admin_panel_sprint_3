@@ -6,7 +6,7 @@ from utils.connection_util import postgres_connection
 
 class Extractor:
     '''
-    класс для извлечения данных из PostgreSQL
+    Класс для извлечения данных
     '''
 
     def __init__(self, psql_dsn, chunk_size: int, storage_state, logger) -> None:
@@ -20,9 +20,7 @@ class Extractor:
                 start_timestamp: datetime.datetime,
                 exclude_ids: list) -> Iterator:
         """
-        Метод чтения данных пачками.
-        Ищем строки, удовлетворяющие условию
-         - при нахождении записываем в хранилище состояния idшники
+        Метод для чтения пачками
         """
         
         with postgres_connection(self.dsn) as pg_conn, pg_conn.cursor() as cursor:

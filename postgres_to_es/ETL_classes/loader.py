@@ -16,8 +16,6 @@ class Loader:
     @backoff((ConnectionError,))
     def create_index(self, index_name: str) -> None:
         """Создание ES индекса.
-           :param index_name: Наименование индекса.
-           :param mapping: Настройки индекса
         """
         settings = {
             "refresh_interval": "1s",
@@ -139,7 +137,6 @@ class Loader:
 
     def load(self, data: list[dict]) -> None:
         """Загружаем данные пачками в ElasticSearch
-        :param data: Преобразованные словари для вставки в ElasticSearch
         """
         actions = [{'_index': 'movies', '_id': row['id'], '_source': row, } for row in data]
         # подключившись к ElasticSearch

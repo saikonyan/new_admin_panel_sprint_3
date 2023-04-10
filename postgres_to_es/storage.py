@@ -17,10 +17,6 @@ class BaseStorage:
 
 
 class JsonFileStorage(BaseStorage):
-    '''
-    Здесь представлена реализация с сохранением состояния в файл json.
-    В целом ничего не мешает поменять это поведение на работу с БД или распределённым хранилищем.
-    '''
 
     def __init__(self, file_path: Optional[str] = None):
         self.file_path = file_path
@@ -37,8 +33,7 @@ class JsonFileStorage(BaseStorage):
                 return json.load(file)
         
         except (FileNotFoundError, json.JSONDecodeError):
-            
-            # если возникло исклчюение
+
             with open(self.file_path, 'w', encoding='utf8') as file:
                 
                 # создаем json с дефолтным значением self.default_state
@@ -62,8 +57,7 @@ class JsonFileStorage(BaseStorage):
 
 class State:
     """
-    Класс для хранения состояния при работе с данными, 
-    чтобы постоянно не перечитывать данные с начала (в случае остановки).
+    Класс для хранения состояния при работе с данными,
     """
 
     def __init__(self, storage: BaseStorage):

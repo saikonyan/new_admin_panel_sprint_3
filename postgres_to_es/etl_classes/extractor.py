@@ -61,10 +61,10 @@ class Extractor:
                 rows = cursor.fetchmany(self.chunk_size)
                 # если таких строк нет - выходим
                 if not rows:
-                    self.logger.info('изменений не найдено')
+                    self.logger.info('no changes')
                     break
                 # если строки есть - фиксируем в хранилище состояния
-                self.logger.info(f'извлечено {len(rows)} строк')
+                self.logger.info(f'extracted {len(rows)} strings')
                 for data in rows:
                     ids_list = self.state.get_state("filmwork_ids")
                     ids_list.append(data['id'])

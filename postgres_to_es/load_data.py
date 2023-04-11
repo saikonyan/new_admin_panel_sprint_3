@@ -19,7 +19,7 @@ from utils.logger_util import get_logger
 def etl(logger: logging.Logger, extractor: Extractor, transformer: Transformer, state: State, loader: Loader) -> None:
 
     last_sync_timestamp = state.get_state('last_sync_timestamp')
-    logger.info(f'последняя синхронизация была {last_sync_timestamp}')
+    logger.info(f'last sync {last_sync_timestamp}')
     start_timestamp = datetime.datetime.now()
     filmwork_ids = state.get_state('filmwork_ids')
 
@@ -46,5 +46,5 @@ if __name__ == '__main__':
     # запускаем процесс ETL
     while True:
         etl(logger, extractor, transformer, state, loader)
-        logger.info(f'в сон на {configs.sleep_time}')
+        logger.info(f'sleep {configs.sleep_time}')
         time.sleep(configs.sleep_time)

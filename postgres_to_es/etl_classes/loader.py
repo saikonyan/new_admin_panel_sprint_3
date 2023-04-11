@@ -27,7 +27,7 @@ class Loader:
             if not es.indices.exists(index='movies'):
                 # создаем индекс movies
                 es.indices.create(index=index_name, settings=settings, mappings=mappings)
-                self.logger.info(f"Создание индекса {index_name} со следующими схемами:"
+                self.logger.info(f"Create index {index_name}:"
                                  f"{json.dumps(settings, indent=2)} и {json.dumps(mappings, indent=2)} ")
 
     def load(self, data: list[dict]) -> None:
@@ -37,4 +37,4 @@ class Loader:
         with elastic_search_connection(self.dsn) as es:
             # используя встроенные методы библиотеки elasticsearch грузим данные в ElasticSearch
             helpers.bulk(es, actions)
-            self.logger.info(f'загружено {len(data)} строк')
+            self.logger.info(f'loaded {len(data)} strings')

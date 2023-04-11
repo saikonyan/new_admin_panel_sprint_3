@@ -19,4 +19,8 @@ EXPOSE 8080/tcp
 
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0:8080" ]
 
+RUN ["chmod", "+x", "entrypoint.sh"]
+
+ENTRYPOINT ["./entrypoint.sh"]
+
 

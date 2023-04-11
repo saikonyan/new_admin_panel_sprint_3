@@ -5,9 +5,9 @@ import time
 import elasticsearch
 import psycopg2
 
-from ETL_classes.extractor import extractor
-from ETL_classes.loader import Loader
-from ETL_classes.transformer import Transformer
+from etl_classes.extractor import Extractor
+from etl_classes.loader import Loader
+from etl_classes.transformer import Transformer
 from utils.backoff_util import backoff
 from storage import (State, JsonFileStorage)
 from utils.env_utils import BaseConfig
@@ -16,14 +16,14 @@ from utils.logger_util import get_logger
 
 @backoff((elasticsearch.exceptions.ConnectionError,))
 @backoff((psycopg2.OperationalError,))
-def etl(logger: logging.Logger, extracrot: extractor, transformer: Transformer, state: State, loader: Loader) -> None:
+def etl(logger: logging.Logger, extractor: Extractor, transformer: Transformer, state: State, loader: Loader) -> None:
 
     last_sync_timestamp = state.get_state('last_sync_timestamp')
     logger.info(f'последняя синхронизация была {last_sync_timestamp}')
     start_timestamp = datetime.datetime.now()
     filmwork_ids = state.get_state('filmwork_ids')
 
-    for extracted_part in extracrot.extract(last_sync_timestamp, start_timestamp, filmwork_ids):
+    for extracted_part in extractor.extract(last_sync_timestamp, start_timestamp, filmwork_ids):
         # преобразовываем в Elasticsearch
         data = transformer.transform(extracted_part)
         # грузим в Elasticsearch
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # создаем логгер
     logger = get_logger(__name__)
     state = State(JsonFileStorage(file_path='state.json'))
-    extractor = extractor(psql_dsn=configs.dsn, chunk_size=configs.chunk_size, storage_state=state, logger=logger)
+    extractor = Extractor(psql_dsn=configs.dsn, chunk_size=configs.chunk_size, storage_state=state, logger=logger)
     transformer = Transformer()
     loader = Loader(dsn=configs.es_base_url, logger=logger)
     # запускаем процесс ETL

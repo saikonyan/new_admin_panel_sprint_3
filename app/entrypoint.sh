@@ -1,20 +1,15 @@
 #!/bin/sh
 
-if [ "$DATABASE" = "postgres" ]
-then
-    echo "Waiting for postgres..."
+set -e
 
-    while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
+echo "Start project"
+
+while ! nc -z $DB_HOST $DB_PORT; do
       sleep 0.1
-    done
+done
 
-    echo "PostgreSQL started"
+python manage.py migrate --noinput
+python sqlite_to_postgres/load_data.py
 
-fi
+gunicorn config.wsgi:application --bind 0.0.0.0:8000
 
-python manage.py migrate
-python manage.py collectstatic --no-input
-python manage.py compilemessages
-
-
-exec "$@"
